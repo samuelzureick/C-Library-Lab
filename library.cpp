@@ -15,21 +15,27 @@ void Document::updateTitle(const char *newTitle) {
 	_title = (char *)malloc(sizeof(char) *strlen(newTitle));
 	_title = (char *)newTitle;
 }
+
 void Document::updateYear(int newYear) {
 	_year = newYear;
 }
+
 void Document::updateQuantity(int newQuantity) {
 	_quantity = newQuantity;
 }
+
 char *Document::getTitle() {
 	return _title;
 }
+
 int Document::getYear() {
 	return _year;
 }
+
 int Document::getQuantity() {
 	return _quantity;
 }
+
 int Document::borrowDoc() {
 	if (_quantity > 0) {
 		_quantity = _quantity - 1;
@@ -37,9 +43,12 @@ int Document::borrowDoc() {
 	}
 	return 1;
 }
+
 void Document::returnDoc() {
 	_quantity = _quantity + 1;
 }
+
+
 
 /* Novel Definitions */
 
@@ -51,9 +60,8 @@ Novel::Novel(const char *title, const char *author, int year, int quantity) {
 	_year = year;
 	_quantity = quantity;
 }
+
 Novel::~Novel() {
-	//free(*_title);
-	//free(*_author);
 	printf("destructor called\n");
 }
 
@@ -78,9 +86,11 @@ void Novel::print() {
 void Novel::updateAuthor(const char *newAuthor) {
 	*_author = *newAuthor;
 }
+
 char *Novel::getAuthor() {
 	return _author;
 }
+
 
 
 /* Comic Definitions */
@@ -96,8 +106,6 @@ Comic::Comic(const char *title, const char *author, int issue, int year, int qua
 }
 
 Comic::~Comic() {
-	//free(_title);
-	//free(_author);
 	printf("destructor called\n");
 }
 
@@ -135,6 +143,8 @@ int Comic::getIssue() {
 	return _issue;
 }
 
+
+
 /* Magazine Definitions*/
 
 Magazine::Magazine(const char *title, int issue, int year, int quantity) {
@@ -147,7 +157,6 @@ Magazine::Magazine(const char *title, int issue, int year, int quantity) {
 }
 
 Magazine::~Magazine() {
-	//free(_title);
 	printf("destructor called\n");
 }
 
@@ -173,8 +182,10 @@ int Magazine::getIssue() {
 	return _issue;
 }
 
-Library::Library() {
 
+/* Library Implementation */
+
+Library::Library() {
 }
 
 void Library::print() {
@@ -192,199 +203,27 @@ int Library::dumpCSV(const char *filename) {
 
 	for (int i = 0; i < _docs.size(); i++) {
 		if (_docs.at(i)->getDocType() == DOC_NOVEL) {
-			const char *typebuffer = "novel,";
-			const char *authorbuffer = ((Novel *)_docs.at(i))->getAuthor();
-			const char *titlebuffer = _docs.at(i)->getTitle();
-			const int yearbuffer = _docs.at(i)->getYear();
-			const int qbuffer = _docs.at(i)->getQuantity();
-			const char *commabuffer = ",";
-			const char *newlnbuffer = "\n";
-			if(write(fileref,typebuffer,strlen(typebuffer)) != strlen(typebuffer)) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-			
-			if(write(fileref, titlebuffer,strlen(titlebuffer)) != strlen(titlebuffer)) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, authorbuffer,strlen(authorbuffer)) != strlen(authorbuffer)) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if (write(fileref, &yearbuffer,(trunc(log10(yearbuffer)))) != (trunc(log10(yearbuffer))) ){
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, &qbuffer,(trunc(log10(qbuffer))) ) != (trunc(log10(qbuffer))) ){
-				printf("error writing/n");
-				close(fileref);
-				return -1;
+			char writebuffer[128];
+			sprintf(writebuffer, "novel,%s,%s,,%d,%d\n",((Novel *)_docs.at(i))->getTitle(),((Novel *)_docs.at(i))->getAuthor(),((Novel *)_docs.at(i))->getYear(),((Novel *)_docs.at(i))->getQuantity());
+			if(write(fileref, writebuffer,strlen(writebuffer)) != strlen(writebuffer)) {
+				printf("error writing\n");
+				close(fileref); return -1;
 			}
 		}
 		else if (_docs.at(i)->getDocType() == DOC_COMIC) {
-			const char *typebuffer = "comic,";
-			const char *authorbuffer = ((Comic *)_docs.at(i))->getAuthor();
-			const int issuebuffer = ((Comic *)_docs.at(i))->getIssue();
-			const char *titlebuffer = _docs.at(i)->getTitle();
-			const int yearbuffer = _docs.at(i)->getYear();
-			const int qbuffer = _docs.at(i)->getQuantity();
-			const char *commabuffer = ",";
-			const char *newlnbuffer = "\n";	
-			if(write(fileref,typebuffer,strlen(typebuffer)) != strlen(typebuffer)) {
-			printf("error writing/n");
-			close(fileref);
-			return -1;
-			}
-			
-			if(write(fileref, titlebuffer,strlen(titlebuffer)) != strlen(titlebuffer)) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, authorbuffer,strlen(authorbuffer)) != strlen(authorbuffer)) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, &issuebuffer,(trunc(log10(issuebuffer)))) != (trunc(log10(issuebuffer))) ) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, &yearbuffer,(trunc(log10(yearbuffer)))) != (trunc(log10(yearbuffer))) ) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, &qbuffer,(trunc(log10(qbuffer))) ) != (trunc(log10(qbuffer))) ) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
+			char writebuffer[128];
+			sprintf(writebuffer, "comic,%s,%s,%d,%d,%d\n",((Comic *)_docs.at(i))->getTitle(),((Comic *)_docs.at(i))->getAuthor(),((Comic *)_docs.at(i))->getIssue(),((Comic *)_docs.at(i))->getYear(),((Comic *)_docs.at(i))->getQuantity());
+			if(write(fileref, writebuffer,strlen(writebuffer)) != strlen(writebuffer)) {
+				printf("error writing\n");
+				close(fileref); return -1;
 			}
 		}
 		else {
-			const char *typebuffer = "magazine,";
-			const int issuebuffer = ((Magazine *)_docs[i])->getIssue();
-			const char *titlebuffer = _docs.at(i)->getTitle();
-			const int yearbuffer = _docs.at(i)->getYear();
-			const int qbuffer = _docs.at(i)->getQuantity();
-			const char *commabuffer = ",";
-			const char *newlnbuffer = "\n";
-
-			if(write(fileref,typebuffer,strlen(typebuffer)) != strlen(typebuffer)) {
-			printf("error writing/n");
-			close(fileref);
-			return -1;
-			}
-		
-			if(write(fileref, titlebuffer,strlen(titlebuffer)) != strlen(titlebuffer)) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, &issuebuffer,(trunc(log10(issuebuffer))) ) != (trunc(log10(issuebuffer))) ) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, &yearbuffer,(trunc(log10(yearbuffer)))) != (trunc(log10(yearbuffer))) ) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, commabuffer,1) != 1) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
-			}
-
-			if(write(fileref, &qbuffer,(trunc(log10(qbuffer))) )!= (trunc(log10(qbuffer))) ) {
-				printf("error writing/n");
-				close(fileref);
-				return -1;
+			char writebuffer[128];
+			sprintf(writebuffer, "magazine,%s,%d,%d,%d\n",((Magazine *)_docs.at(i))->getTitle(),((Magazine *)_docs.at(i))->getIssue(),((Magazine *)_docs.at(i))->getYear(),((Magazine *)_docs.at(i))->getQuantity());
+			if(write(fileref, writebuffer,strlen(writebuffer)) != strlen(writebuffer)) {
+				printf("error writing\n");
+				close(fileref); return -1;
 			}
 		}
 
