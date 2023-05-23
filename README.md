@@ -1,1 +1,1 @@
-Access the subject [here](https://olivierpierre.github.io/comp26020/labs/lab2/comp26020p1-lab2-subject.pdf).
+This is a C++ project that impliments a simple library system, accompanied by its necessary functions. It is intended to teach the basics of the C programming language.
